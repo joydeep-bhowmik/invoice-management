@@ -14,6 +14,7 @@ Route::get('/run-seeder', function (Request $request) {
 
     Artisan::call('migrate:fresh', [
         '--seed' => true,
+        '--force' => true,
     ]);
 
     $output = Artisan::output();
