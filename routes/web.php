@@ -8,11 +8,17 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/run-seeder', function (Request $request) {
 
-    if ($request->input('code') !== 8974) {
+    if ($request->input('code') != 8974) {
         abort(404);
     }
-    Artisan::command('migrate:fresh', function () {});
-    Artisan::command('db:seed', function () {});
+
+    Artisan::call('migrate:fresh', [
+        '--seed' => true,
+    ]);
+
+    $output = Artisan::output();
+
+    return response('<pre>'.$output.'</pre>');
 });
 
 Route::get('/', function () {
