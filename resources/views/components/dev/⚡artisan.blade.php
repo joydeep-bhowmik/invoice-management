@@ -47,9 +47,10 @@ new class extends Component {
         $this->addOutputLine("{$this->terminalPrompt} {$commandToRun}");
 
         try {
-            if (!str_starts_with($command, 'php artisan')) {
+            if (!str_starts_with($commandToRun, 'php artisan')) {
                 throw new \Exception('Only Artisan commands are allowed.');
             }
+            $result = $this->runArtisanCommand($commandToRun);
 
             $this->addOutputLine($result);
         } catch (\Exception $e) {
