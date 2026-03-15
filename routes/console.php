@@ -11,6 +11,10 @@ Artisan::command('inspire', function () {
 Schedule::command('app:clean-barcodes')->daily();
 
 Schedule::call(function () {
-    Artisan::command('migrate:fresh', function () {});
-    Artisan::command('db:seed', function () {});
+    $main = database_path('database.sqlite');
+    $backup = database_path('backups/database.sqlite');
+
+    if (file_exists($backup)) {
+        copy($backup, $main);
+    }
 })->daily();
