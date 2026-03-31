@@ -15,7 +15,8 @@
    
        public function mount()
        {
-           $this->year = request()->query('year', now()->year);
+           #$this->year = request()->query('year', now()->year);
+           $this->year = request()->query('year', '2021');
        }
    
        private function calculateRevenueGrowth($year)

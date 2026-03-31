@@ -1,0 +1,65 @@
+name: Deploy Laravel
+on:
+  pull_request:
+    branches:
+      - production
+    types:
+      - closed
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ftp_details
+    steps:
+      # 1. Checkout repository
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # 2. Setup Node
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # 3. Install Node dependencies
+      - name: Install NPM Dependencies
+        run: npm install --force
+
+      # 4. Build frontend assets (Vite → public/build)
+      - name: Build Assets
+        run: npm run build --force
+
+      # #5. Setup PHP
+      # - name: Setup PHP
+      #   uses: shivammathur/setup-php@v2
+      #   with:
+      #     php-version: 8.4
+
+      # # 6. Install Composer dependencies
+      # - name: Install Composer Dependencies
+      #   run: composer install --no-dev --optimize-autoloader
+
+      # 7. Deploy via FTP
+      - name: Deploy to Server
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_HOSTNAME }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: 21
+          server-dir: /
+          protocol: ftp
+          dangerous-clean-slate: false
+          exclude: |
+            .git/**
+            .github/**
+            node_modules/**
+            tests/**
+            public_html/storage/**
+            public_html/hot
+            .env
+            vendor/**
+            resources/js/**
+            resources/css/**
+            vite.config.js
+            package.json
+            package-lock.json
